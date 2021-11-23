@@ -2,6 +2,7 @@ package com.github.enessetere.rpg.character;
 
 import com.github.enessetere.rpg.armory.Armor;
 import com.github.enessetere.rpg.armory.ArmorPiece;
+import com.github.enessetere.rpg.armory.Item;
 import com.github.enessetere.rpg.armory.Shield;
 import com.github.enessetere.rpg.constants.TestLevelEnum;
 import lombok.AccessLevel;
@@ -9,6 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 @Setter(AccessLevel.PRIVATE)
@@ -21,8 +24,11 @@ class Character {
     private CharacterStatistics statistics;
     private CharacterDefences defences;
     private Map<String, Integer> traits;
+    private List<Item> inventory;
 
-    private Character() {}
+    private Character() {
+        inventory = new LinkedList<>();
+    }
 
     public void equipArmor(Armor armor) {
         this.defences.equipArmor(armor);
@@ -61,7 +67,7 @@ class Character {
     }
 
     public static class Builder {
-        private Character character;
+        private final Character character;
 
         public Builder() {
             this.character = new Character();
@@ -91,6 +97,11 @@ class Character {
                     .charisma(cha)
                     .wisdom(wis)
                     .build());
+            return this;
+        }
+
+        public Builder item(Item item) {
+            character.inventory.add(item);
             return this;
         }
 

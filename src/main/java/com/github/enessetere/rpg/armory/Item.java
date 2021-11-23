@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PROTECTED)
-abstract class Item {
+abstract public class Item {
     protected String name;
     protected int quantity;
     protected int value;

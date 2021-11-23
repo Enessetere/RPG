@@ -17,7 +17,7 @@ class CharacterDefences {
     private Integer parry;
     private Integer block;
     private Integer blockValue;
-    private Armor[] armor = new Armor[Constants.ARMOR_PIECES];
+    private final Armor[] armor = new Armor[Constants.ARMOR_PIECES];
     private Shield shield;
 
     CharacterDefences(CharacterAttributes attributes) {
