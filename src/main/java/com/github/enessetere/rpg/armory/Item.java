@@ -13,4 +13,8 @@ abstract public class Item {
     protected Requirements requirements;
 
     public abstract void drop(String name, String target);
+    public boolean reduceQuantityBy(int value) {
+        quantity -= value;
+        return quantity > 0;
+    }
 }

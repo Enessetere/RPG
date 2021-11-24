@@ -1,18 +1,12 @@
 package com.github.enessetere.rpg.character;
 
-import com.github.enessetere.rpg.armory.Armor;
-import com.github.enessetere.rpg.armory.ArmorPiece;
-import com.github.enessetere.rpg.armory.Item;
-import com.github.enessetere.rpg.armory.Shield;
+import com.github.enessetere.rpg.armory.*;
 import com.github.enessetere.rpg.constants.TestLevelEnum;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Setter(AccessLevel.PRIVATE)
 @Getter
@@ -30,12 +24,14 @@ class Character {
         inventory = new LinkedList<>();
     }
 
-    public void equipArmor(Armor armor) {
+    private void equipArmor(Armor armor) {
         this.defences.equipArmor(armor);
     }
 
-    public void equipShield(Shield shield) {
-        defences.equipShield(shield);
+    private void equipShield(Shield shield) {
+        Item unequipped = defences.equipShield(shield);
+        if(Objects.nonNull(unequipped))
+            inventory.add(unequipped);
     }
 
     public void addTrait(String key, Integer value) {
@@ -52,6 +48,49 @@ class Character {
 
     public boolean block(Integer attackValue) {
         return defences.defendByBlock(TestLevelEnum.VERY_HARD, traits, 15, ArmorPiece.CHEST) < 13;
+    }
+
+    public boolean addToInventory(Item item) {
+        return inventory.add(item);
+    }
+
+    public boolean equipItem(Item piece) {
+        Item item = findItemInInventory(piece);
+        if(!checkItemRequirements(piece))
+            return false;
+        if (!item.reduceQuantityBy(1))
+            inventory.remove(item);
+        if (item instanceof Armor) {
+            equipArmor((Armor) item);
+        } else if (item instanceof Shield) {
+            equipShield((Shield) item);
+        }
+        return false;
+    }
+
+    private Item findItemInInventory(Item piece) {
+        return inventory.stream()
+                .filter(item -> item.equals(piece))
+                .findFirst()
+                .orElseThrow(() -> new CharacterException("Cannot find this item: " + piece.getName()));
+    }
+
+    private boolean checkItemRequirements(Item item) {
+        Requirements requirements = item.getRequirements();
+        return checkRequirements(requirements.getFirstRequirement(), requirements.getFirstRequirementValue())
+                && checkRequirements(requirements.getSecondRequirement(), requirements.getSecondRequirementValue());
+    }
+
+    private boolean checkRequirements(String attributeName, Integer attributeValue) {
+        return switch (attributeName) {
+            case "STR" -> attributes.getStrength() > attributeValue;
+            case "DEX" -> attributes.getDexterity() > attributeValue;
+            case "PER" -> attributes.getPerception() > attributeValue;
+            case "CON" -> attributes.getConstitution() > attributeValue;
+            case "WIS" -> attributes.getWisdom() > attributeValue;
+            case "CHA" -> attributes.getCharisma() > attributeValue;
+            default -> true;
+        };
     }
 
     @Override

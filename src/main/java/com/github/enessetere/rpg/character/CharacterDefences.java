@@ -35,8 +35,10 @@ class CharacterDefences {
         blockValue = (int)Math.ceil(strength / 4.0);
     }
 
-    public void equipShield(Shield shield) {
+    public Shield equipShield(Shield shield) {
+        Shield unequipped = this.shield;
         this.shield = shield;
+        return unequipped;
     }
 
     public void equipArmor(Armor armor) {

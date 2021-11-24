@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Setter(AccessLevel.PRIVATE)
 @Getter(AccessLevel.PUBLIC)
-class Requirements {
+public class Requirements {
     private Requirements() {}
 
     private String firstRequirement;

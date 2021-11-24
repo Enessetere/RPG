@@ -2,7 +2,7 @@ package com.github.enessetere.rpg.armory;
 
 import com.github.enessetere.rpg.mechanics.DiceRoll;
 
-public class Shield {
+public class Shield extends Item {
     private Integer damageReductionDice;
     private Integer additionalBonus;
 
@@ -31,6 +31,11 @@ public class Shield {
     @Override
     public String toString() {
         return "D" + damageReductionDice + " + " + additionalBonus;
+    }
+
+    @Override
+    public void drop(String name, String target) {
+
     }
 
     public static class Builder {
