@@ -2,6 +2,7 @@ package com.github.enessetere.rpg.character;
 
 import com.github.enessetere.rpg.armory.Armor;
 import com.github.enessetere.rpg.armory.ArmorPiece;
+import com.github.enessetere.rpg.armory.Item;
 import com.github.enessetere.rpg.armory.Shield;
 import com.github.enessetere.rpg.constants.Constants;
 import com.github.enessetere.rpg.constants.TestLevelEnum;
@@ -41,8 +42,23 @@ class CharacterDefences {
         return unequipped;
     }
 
-    public void equipArmor(Armor armor) {
-//        this.armor[armor.armorPiece.value] = armor;
+    public Item equipArmor(Armor armor) {
+        int armorPieceId = armor.getArmorPiece().value;
+        Item unequipped = this.armor[armorPieceId];
+        this.armor[armorPieceId] = armor;
+        return unequipped;
+    }
+
+    public Item remove() {
+        Item unequipped = shield;
+        shield = null;
+        return unequipped;
+    }
+
+    public Item remove(ArmorPiece piece) {
+        Item unequipped = armor[piece.value];
+        armor[piece.value] = null;
+        return unequipped;
     }
 
     public int defendByDodge(TestLevelEnum testLevel, Map<String, Integer> traits, Integer attackValue, ArmorPiece armorPiece) {
