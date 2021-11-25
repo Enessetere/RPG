@@ -25,7 +25,9 @@ class Character {
     }
 
     private void equipArmor(Armor armor) {
-        this.defences.equipArmor(armor);
+        Item unequipped = this.defences.equipArmor(armor);
+        if(Objects.nonNull(unequipped))
+            inventory.add(unequipped);
     }
 
     private void equipShield(Shield shield) {
