@@ -68,9 +68,18 @@ public class CharacterFacade {
     }
 
     public boolean addToInventory(Item item, String name) {
-        Character character = findCharacterByName(name)
-                .orElseThrow(() -> new CharacterException(String.format("Cannot create character with name '%s'", name)));
+        Character character = getCharacterByName(name);
         return character.addToInventory(item);
+    }
+
+    private Character getCharacterByName(String name) {
+        return findCharacterByName(name)
+                .orElseThrow(() -> new CharacterException(String.format("Cannot find character with name '%s'", name)));
+    }
+
+    public boolean dropFromInventory(String name, String itemName) {
+        Character character = getCharacterByName(name);
+        return character.removeItemFromInventory(itemName);
     }
 
     public boolean attackWithStrength(String name, TestLevelEnum testLevel) {

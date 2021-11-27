@@ -56,9 +56,21 @@ class Character {
         return inventory.add(item);
     }
 
-    public boolean equipItem(Item piece) {
-        Item item = findItemInInventory(piece);
-        if(!checkItemRequirements(piece))
+    public boolean removeItemFromInventory(String name) {
+        Item item = findItemInInventory(name);
+        return inventory.remove(item);
+    }
+
+    private Item findItemInInventory(String name) {
+        return inventory.stream()
+                .filter(item -> item.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new CharacterException("Cannot find this item: " + name));
+    }
+
+    public boolean equipItem(String name) {
+        Item item = findItemInInventory(name);
+        if(!checkItemRequirements(item))
             return false;
         if (!item.reduceQuantityBy(1))
             inventory.remove(item);
@@ -68,13 +80,6 @@ class Character {
             equipShield((Shield) item);
         }
         return false;
-    }
-
-    private Item findItemInInventory(Item piece) {
-        return inventory.stream()
-                .filter(item -> item.equals(piece))
-                .findFirst()
-                .orElseThrow(() -> new CharacterException("Cannot find this item: " + piece.getName()));
     }
 
     private boolean checkItemRequirements(Item item) {
