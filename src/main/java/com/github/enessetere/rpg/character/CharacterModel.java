@@ -1,6 +1,7 @@
 package com.github.enessetere.rpg.character;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,8 @@ import javax.validation.constraints.*;
 
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PRIVATE)
-class CharacterModel {
+@Builder
+public class CharacterModel {
     @NotBlank(message = "Name is mandatory.")
     @Size(min = 3, max = 15, message = "Name can be 3 to 15 characters long.")
     @Pattern(regexp = "^[A-Za-z]+", message = "Name can contain only letters.")
