@@ -83,22 +83,22 @@ public class CharacterFacade {
     }
 
     public boolean attackWithStrength(String name, TestLevelEnum testLevel) {
-        Character character = players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new CharacterException("No character with name '" + name + "'"));
+        Character character = getCharacterByName(name);
         return testLevel.value <= (DiceRoll.rollADice(Constants.D20) + character.getAttributes().getStrength());
     }
 
     public boolean attackWithDexterity(String name, TestLevelEnum testLevel) {
-        Character character = players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new CharacterException("No character with name '" + name + "'"));
+        Character character = getCharacterByName(name);
         return testLevel.value <= (DiceRoll.rollADice(Constants.D20) + character.getAttributes().getDexterity());
     }
 
     public boolean attackWithConstitution(String name, TestLevelEnum testLevel) {
-        Character character = players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new CharacterException("No character with name '" + name + "'"));
+        Character character = getCharacterByName(name);
         return testLevel.value <= (DiceRoll.rollADice(Constants.D20) + character.getAttributes().getConstitution());
     }
 
     public boolean attackWithSpell(String name, TestLevelEnum testLevel) {
-        Character character = players.stream().filter(player -> player.getName().equals(name)).findFirst().orElseThrow(() -> new CharacterException("No character with name '" + name + "'"));
+        Character character = getCharacterByName(name);
         return testLevel.value <= (DiceRoll.rollADice(Constants.D20) + character.getAttributes().getWisdom());
     }
 }
