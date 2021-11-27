@@ -1,5 +1,6 @@
 package com.github.enessetere.rpg.character;
 
+import com.github.enessetere.rpg.armory.Item;
 import com.github.enessetere.rpg.constants.Constants;
 import com.github.enessetere.rpg.constants.TestLevelEnum;
 import com.github.enessetere.rpg.mechanics.DiceRoll;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -20,28 +22,40 @@ public class CharacterFacade {
     }
 
     public void createNewCharacter(CharacterModel characterModel) {
-        Character character = new Character.Builder()
-                .name(characterModel.getName())
-                .age(characterModel.getAge())
-                .sex(characterModel.getSex().charAt(0))
-                .attributes(characterModel.getStr(), characterModel.getDex(), characterModel.getPer(), characterModel.getCon(), characterModel.getCha(), characterModel.getWis())
-                .build();
-        if (players.stream().noneMatch(player -> player.getName().equals(character.getName()))) {
-            players.add(character);
-            log.info(String.format("Character '%s' has been created.", character.getName()));
-        } else {
-            String message = String.format("Cannot create character with name '%s'", character.getName());
+        if (findCharacterByName(characterModel.getName()).isPresent()) {
+            String message = String.format("Cannot create character with name '%s'", characterModel.getName());
             log.error(message);
             throw new CharacterException(message);
         }
+        players.add(createCharacterInstance(characterModel));
+        log.info(String.format("Character '%s' has been created.", characterModel.getName()));
     }
 
+    private Optional<Character> findCharacterByName(String name) {
+        return players.stream()
+                .filter(player -> player.getName().equals(name))
+                .findFirst();
+    }
+
+    private Character createCharacterInstance(CharacterModel model) {
+        return new Character.Builder()
+                .name(model.getName())
+                .age(model.getAge())
+                .sex(model.getSex().charAt(0))
+                .attributes(
+                        model.getStr(),
+                        model.getDex(),
+                        model.getPer(),
+                        model.getCon(),
+                        model.getCha(),
+                        model.getWis()
+                )
+                .build();
+    }
+
+
     public String displayCharacter(String characterName) {
-        Character character = players.stream()
-                .filter(player -> player.getName().equals(characterName))
-                .findFirst()
-                .orElseThrow(() -> new CharacterException(String.format("Cannot find character with given name '%s'!", characterName)));
-        return character.toString();
+        return findCharacterByName(characterName).toString();
     }
 
     public String displayAllCharacters() {
@@ -51,6 +65,12 @@ public class CharacterFacade {
         return players.stream()
                 .map(Character::toString)
                 .collect(Collectors.joining(";"));
+    }
+
+    public boolean addToInventory(Item item, String name) {
+        Character character = findCharacterByName(name)
+                .orElseThrow(() -> new CharacterException(String.format("Cannot create character with name '%s'", name)));
+        return character.addToInventory(item);
     }
 
     public boolean attackWithStrength(String name, TestLevelEnum testLevel) {
